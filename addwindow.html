@@ -10,8 +10,10 @@
         <div>
 
           <!-- Create Entry Form !-->
-          <label>Enter Item</label>
-          <input type="text" id="item" autofocus>
+          <label>Enter Item ID</label>
+          <input type="text" id="profileID" autofocus>
+          <label>Enter Item Text</label>
+          <input type="text" id="itemText">
 
         </div>
 
@@ -19,22 +21,23 @@
 
       </form>
     </div>
-    
+
     <script>
-      
+
       // Import Electron
       const electron = require('electron');
       const {ipcRenderer} = electron;
-      
+
       // Create Form object and listen for submit
       const form = document.querySelector('form');
       form.addEventListener('submit', submitForm);
-      
+
       // Route form data to main.js
       function submitForm(e){
         e.preventDefault();
-        const item = document.querySelector('#item').value;
-        ipcRenderer.send('item:add', item);
+        const profileID = document.querySelector('#profileID').value;
+        const itemText = document.querySelector('#itemText').value;
+        ipcRenderer.send('item:newItem', profileID, itemText)
       }
     </script>
   </body>

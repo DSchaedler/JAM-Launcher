@@ -8,9 +8,11 @@
 const electron = require('electron')
 const url = require('url');
 const path = require('path');
+const Store = require('electron-store')
 
 // Pull Required structures from electron
 const {app, BrowserWindow, Menu, ipcMain} = electron;
+const store = new Store();
 
 // Define View Constants
 let mainWindow;
@@ -18,26 +20,28 @@ let addWindow;
 
 // Listen for app to be ready
 app.on('ready', function(){
-  
+
   // create new
   mainWindow = new BrowserWindow({
     webPreferences: { // SEC RISK: this and below line may open to csx attacks
       nodeIntegration: true
     }
   });
-  
+
   //load html
   mainWindow.loadURL(url.format({
     pathname: path.join(__dirname, 'index.html'),
       protocol: 'file:',
       slashes: true
   }));
-  
+
+  console.log(store.get('list'));
+
   // Quit app when main window closed
   mainWindow.on('closed',function(){
     app.quit();
   });
-    
+
   // build menu
   const mainMenu = Menu.buildFromTemplate(mainMenuTemplate);
   // insert Menu
@@ -47,24 +51,24 @@ app.on('ready', function(){
 // Handle CreateAdd Window
 function createAddWindow(){
   // Create new item Window
-  
+
   addWindow = new BrowserWindow({
     width: 600,
     height: 400,
     title:'Add Item',
-    webPreferences: { 
+    webPreferences: {
       nodeIntegration: true, // SEC RISK: this line may open to csx attacks
       autoHideMenuBar: true
     }
   });
-    
+
   // Load html into window
   addWindow.loadURL(url.format({
     pathname: path.join(__dirname, 'addwindow.html'),
     protocol: 'file:',
     slashes: true
   }));
-  
+
   //Garbage Collection - free window assignment once closed
   addWindow.on('close', function(){
     addWindow = null;
@@ -72,9 +76,13 @@ function createAddWindow(){
 }
 
 // Catch Item Add from addwindow.html
-ipcMain.on('item:add', function(e, item){
-  console.log(item); // REMOVE
-  mainWindow.webContents.send('item:add', item); // Send to index.html
+ipcMain.on('item:newItem', function(e, profileID, itemText){
+  console.log(profileID, itemText); // REMOVE
+  storeLocation = "list." + profileID + ".text"
+  console.log(storeLocation)
+  store.set(storeLocation, itemText);
+  console.log(store.get(storeLocation));
+  mainWindow.webContents.send('item:add', itemText); // Send to index.html
   addWindow.close(); // close new item window
 });
 
