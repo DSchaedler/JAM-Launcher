@@ -1,0 +1,17 @@
+{
+  "name": "jam-launcher",
+  "version": "1.0.0",
+  "description": "JustAnotherModpack Launcher",
+  "main": "main.js",
+  "dependencies": {
+    "electron": "^5.0.7",
+    "electron-dl": "^1.14.0",
+    "electron-store": "^4.0.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "start": "electron ."
+  },
+  "author": "D Schaedler",
+  "license": "MIT"
+}

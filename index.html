@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>JAM Launcher</title>
+    <link rel="stylesheet" href="materialize.min.css">
+    <link rel="stylesheet" href="iconfont/material-icons.css">
+  </head>
+  <body>
+    <nav>
+      <div class="nav-wapper">
+        <a class="brand-logo center">JAM Launcher</a>
+      </div>
+    </nav>
+    
+    <!-- TEST
+    Add Card !-->
+    <div class="row" id="cardRow">
+      <div class="col s12 m5" id="cardColumn">
+      </div>
+    </div>
+    
+    <script>
+      
+      // Import Electron
+      const electron = require('electron');
+      const {ipcRenderer} = electron;
+      // Create ul object
+      const rootDiv = document.getElementById("cardColumn")
+      
+      // TEST
+      ipcRenderer.on('item:add', function(e, item){
+        //Create Card Object
+        const newCard = document.createElement('div')
+        newCard.className = 'card-panel teal';
+        //Create Card Text
+        const cardText = document.createElement('span');
+        cardText.className = 'white-text';
+        cardText.innerHTML = item;
+        //Create Options Button
+        const cardButton = document.createElement('a');
+        cardButton.href='https://imgs.xkcd.com/comics/expiration_date_high_score.png';
+        cardButton.className = 'secondary-content';
+        const buttonIcon = document.createElement('i');
+        buttonIcon.className = 'material-icons';
+        buttonIcon.innerHTML = 'more_vert';
+        buttonIcon.setAttribute('style', 'color:black');
+        
+        cardButton.appendChild(buttonIcon);
+        
+        newCard.appendChild(cardText);
+        newCard.appendChild(cardButton);
+        rootDiv.appendChild(newCard);
+      });
+      
+      // Clear Items
+      ipcRenderer.on('item:clear', function(){
+        rootDiv.innerHTML = '';
+      });
+      
+      // Remove Item
+      rootDiv.addEventListener('dblclick', removeItem);
+      
+      function removeItem(e){
+        e.target.remove();
+      };
+      
+    </script>
+  </body>
+</html>
