@@ -107,6 +107,10 @@ ipcMain.on('loadCards', function(e){
   loadCards();
 })
 
+ipcMain.on('invokeAddItem', function(e){
+  createAddWindow();
+})
+
 function loadCards(){
   //Load Stored items from Memory
   mainWindow.webContents.send('item:clear');
