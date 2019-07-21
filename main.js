@@ -32,7 +32,6 @@ app.on('ready', function(){
       protocol: 'file:',
       slashes: true
   })); // Load index.html
-  console.log(store.get('list')); // REMOVE
 
   // Quit app when main window closed
   mainWindow.on('closed',function(){
@@ -91,22 +90,32 @@ function createConfirmClearWindow(){
 
 // Catch Item Add from addwindow.html
 ipcMain.on('item:newItem', function(e, profileID, itemText){
-  console.log(profileID, itemText); // REMOVE
   storeLocation = "list." + profileID + ".text"
-  console.log(storeLocation) // REMOVE
   store.set(storeLocation, itemText);
-  console.log(store.get(storeLocation)); // REMOVE
-  mainWindow.webContents.send('item:add', itemText); // Send to index.html
+  loadCards();
   addWindow.close(); // close new item window
 });
 
 // Catch Clear Items from confirmClearWindow.html
 ipcMain.on('clearItems:confirm', function(e){
-  console.log('Closing Clear Window') // REMOVE
   store.clear()
-  console.log(store.get('list')); // REMOVE
+  loadCards();
   confirmClearWindow.close();
 })
+
+function loadCards(){
+  //Load Stored items from Memory
+  mainWindow.webContents.send('item:clear');
+  if (store.size > 0) {
+    cardList = store.get('list');
+    var x;
+    for (x in cardList) {
+      itemText = store.get('list.' + x + '.text')
+      console.log(itemText) // REMOVE
+      mainWindow.webContents.send('item:add', itemText);
+    }
+  }
+}
 
 // Create Menu Template
 // accelerators are MacOS compatible
@@ -119,6 +128,12 @@ const mainMenuTemplate = [
         accelerator: process.platform == 'darwin' ? 'Command+N' : 'Ctrl+N',
         click(){
           createAddWindow();
+        }
+      },
+      {
+        label: 'Load Data',
+        click(){
+          loadCards();
         }
       },
       {
