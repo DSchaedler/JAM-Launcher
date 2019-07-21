@@ -12,22 +12,24 @@
         <a class="brand-logo center">JAM Launcher</a>
       </div>
     </nav>
-    
+
     <!-- TEST
     Add Card !-->
     <div class="row" id="cardRow">
       <div class="col s12 m5" id="cardColumn">
       </div>
     </div>
-    
+
     <script>
-      
+
       // Import Electron
       const electron = require('electron');
       const {ipcRenderer} = electron;
       // Create ul object
       const rootDiv = document.getElementById("cardColumn")
-      
+
+      ipcRenderer.send('loadCards');
+
       // TEST
       ipcRenderer.on('item:add', function(e, item){
         //Create Card Object
@@ -45,26 +47,26 @@
         buttonIcon.className = 'material-icons';
         buttonIcon.innerHTML = 'more_vert';
         buttonIcon.setAttribute('style', 'color:black');
-        
+
         cardButton.appendChild(buttonIcon);
-        
+
         newCard.appendChild(cardText);
         newCard.appendChild(cardButton);
         rootDiv.appendChild(newCard);
       });
-      
+
       // Clear Items
       ipcRenderer.on('item:clear', function(){
         rootDiv.innerHTML = '';
       });
-      
+
       // Remove Item
       rootDiv.addEventListener('dblclick', removeItem);
-      
+
       function removeItem(e){
         e.target.remove();
       };
-      
+
     </script>
   </body>
 </html>

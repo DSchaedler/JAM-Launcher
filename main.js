@@ -103,6 +103,10 @@ ipcMain.on('clearItems:confirm', function(e){
   confirmClearWindow.close();
 })
 
+ipcMain.on('loadCards', function(e){
+  loadCards();
+})
+
 function loadCards(){
   //Load Stored items from Memory
   mainWindow.webContents.send('item:clear');
