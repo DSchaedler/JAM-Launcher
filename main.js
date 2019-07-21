@@ -21,39 +21,34 @@ let addWindow;
 // Listen for app to be ready
 app.on('ready', function(){
 
-  // create new
+  // Create Main Application Window
   mainWindow = new BrowserWindow({
     webPreferences: { // SEC RISK: this and below line may open to csx attacks
       nodeIntegration: true
     }
   });
-
-  //load html
   mainWindow.loadURL(url.format({
     pathname: path.join(__dirname, 'index.html'),
       protocol: 'file:',
       slashes: true
-  }));
-
-  console.log(store.get('list'));
+  })); // Load index.html
+  console.log(store.get('list')); // REMOVE
 
   // Quit app when main window closed
   mainWindow.on('closed',function(){
     app.quit();
   });
 
-  // build menu
+  // Build Menu
   const mainMenu = Menu.buildFromTemplate(mainMenuTemplate);
-  // insert Menu
-  Menu.setApplicationMenu(mainMenu);
+  Menu.setApplicationMenu(mainMenu); // insert Menu
 });
 
-// Handle CreateAdd Window
+// Handle Create Add Window
 function createAddWindow(){
   // Create new item Window
-
   addWindow = new BrowserWindow({
-    width: 600,
+    width: 400,
     height: 400,
     title:'Add Item',
     webPreferences: {
@@ -61,17 +56,36 @@ function createAddWindow(){
       autoHideMenuBar: true
     }
   });
-
-  // Load html into window
-  addWindow.loadURL(url.format({
+  addWindow.loadURL(url.format({  // Load addwindow.html
     pathname: path.join(__dirname, 'addwindow.html'),
     protocol: 'file:',
     slashes: true
   }));
-
   //Garbage Collection - free window assignment once closed
   addWindow.on('close', function(){
     addWindow = null;
+  });
+}
+// Handle Create Confirm Clear Window
+function createConfirmClearWindow(){
+  //Create Window to confirm Clearing Items
+  confirmClearWindow = new BrowserWindow({
+    width: 400,
+    height: 100,
+    title: "Confirm: Clear all Profiles?",
+    webPreferences: {
+      nodeIntegration: true,
+      autoHideMenuBar: true
+    }
+  });
+  confirmClearWindow.loadURL(url.format({ // Load confirmClearWindow.html
+    pathname: path.join(__dirname, 'confirmClearWindow.html'),
+    protocol: 'file:',
+    slashes: true
+  }));
+  // Garbage Collection - free window once closed
+  confirmClearWindow.on('close', function(){
+    confirmClearWindow = null;
   });
 }
 
@@ -79,12 +93,20 @@ function createAddWindow(){
 ipcMain.on('item:newItem', function(e, profileID, itemText){
   console.log(profileID, itemText); // REMOVE
   storeLocation = "list." + profileID + ".text"
-  console.log(storeLocation)
+  console.log(storeLocation) // REMOVE
   store.set(storeLocation, itemText);
-  console.log(store.get(storeLocation));
+  console.log(store.get(storeLocation)); // REMOVE
   mainWindow.webContents.send('item:add', itemText); // Send to index.html
   addWindow.close(); // close new item window
 });
+
+// Catch Clear Items from confirmClearWindow.html
+ipcMain.on('clearItems:confirm', function(e){
+  console.log('Closing Clear Window') // REMOVE
+  store.clear()
+  console.log(store.get('list')); // REMOVE
+  confirmClearWindow.close();
+})
 
 // Create Menu Template
 // accelerators are MacOS compatible
@@ -100,9 +122,9 @@ const mainMenuTemplate = [
         }
       },
       {
-        label: 'Clear Items',
+        label: 'Clear Data',
         click(){
-          mainWindow.webContents.send('item:clear')
+          createConfirmClearWindow();
         }
       },
       {

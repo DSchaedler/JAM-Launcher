@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang ="en">
+  <head>
+    <title>Confirm Data Clear</title>
+    <link rel="stylesheet" href="materialize.min.css">
+  </head>
+  <body>
+    <div class="container">
+      <form>
+        <div>
+          <!-- Create Confrim Box !-->
+          <center>Confirm Clear? This will remove all stored data.</center>
+        </div>
+
+        <center>
+          <button class="btn waves-effec waves-light" type="submit">Clear Data</button>
+          <button class="btn waves-effec waves-light" type="button">Cancel</button>
+        </center>
+      </form>
+    </div>
+    <script>
+      // Import Electron
+      const electron = require('electron');
+      const {ipcRenderer} = electron;
+
+      // Create Form object and listen for submit
+      const form = document.querySelector('form');
+      form.addEventListener('submit', submitForm);
+
+      // Route to main.js
+      function submitForm(e){
+        e.preventDefault();
+        ipcRenderer.send('clearItems:confirm')
+      }
+    </script>
+  </body>
+</html>
