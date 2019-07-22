@@ -111,6 +111,13 @@ ipcMain.on('invokeAddItem', function(e){
   createAddWindow();
 })
 
+ipcMain.on('invokeRemoveItem', function(e, profileID){
+  console.log(profileID); // REMOVE
+  storeLocation = "list." + profileID
+  store.delete(storeLocation);
+  loadCards();
+})
+
 function loadCards(){
   //Load Stored items from Memory
   mainWindow.webContents.send('item:clear');
@@ -119,8 +126,7 @@ function loadCards(){
     var x;
     for (x in cardList) {
       itemText = store.get('list.' + x + '.text')
-      console.log(itemText) // REMOVE
-      mainWindow.webContents.send('item:add', itemText);
+      mainWindow.webContents.send('item:add', x, itemText);
     }
   }
 }
