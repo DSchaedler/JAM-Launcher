@@ -9,6 +9,7 @@ const electron = require('electron')
 const url = require('url');
 const path = require('path');
 const Store = require('electron-store')
+const {download} = require('electron-dl')
 
 // Pull Required structures from electron
 const {app, BrowserWindow, Menu, ipcMain} = electron;
@@ -41,6 +42,17 @@ app.on('ready', function(){
   // Build Menu
   const mainMenu = Menu.buildFromTemplate(mainMenuTemplate);
   Menu.setApplicationMenu(mainMenu); // insert Menu
+
+  const fs = require('fs')
+
+  fs.access("./cmpdl-1.2.jar", fs.F_OK, (err) => {
+    if (err) {
+      console.log(err)
+      download(mainWindow, "https://github.com/Vazkii/CMPDL/releases/download/1.2/cmpdl-1.2.jar", {directory:"./"});
+      return
+    }
+    return
+  })
 });
 
 // Handle Create Add Window
