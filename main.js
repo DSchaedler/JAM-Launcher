@@ -112,7 +112,6 @@ ipcMain.on('invokeAddItem', function(e){
 })
 
 ipcMain.on('invokeRemoveItem', function(e, profileID){
-  console.log(profileID); // REMOVE
   storeLocation = "list." + profileID
   store.delete(storeLocation);
   loadCards();
