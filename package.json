@@ -4,7 +4,7 @@
   "description": "JustAnotherModpack Launcher",
   "main": "main.js",
   "dependencies": {
-    "electron": "^7.2.4",
+    "electron": "^11.5.0",
     "electron-dl": "^1.14.0",
     "electron-store": "^4.0.0"
   },
